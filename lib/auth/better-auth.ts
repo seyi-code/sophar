@@ -3,16 +3,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 
-/**
- * Better Auth configuration for Sophar.
- * Email/password + optional Google / GitHub social login.
- *
- * Env:
- * - BETTER_AUTH_SECRET
- * - BETTER_AUTH_URL / NEXT_PUBLIC_APP_URL
- * - GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET (optional)
- * - GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET (optional)
- */
 const socialProviders: Record<
   string,
   { clientId: string; clientSecret: string }
@@ -39,6 +29,7 @@ export const auth = betterAuth({
       user: schema.users,
       session: schema.sessions,
       account: schema.accounts,
+      verification: schema.verification,
     },
   }),
   emailAndPassword: {
@@ -48,8 +39,8 @@ export const auth = betterAuth({
   socialProviders:
     Object.keys(socialProviders).length > 0 ? socialProviders : undefined,
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // 1 day
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
   },
   trustedOrigins: [
     process.env.BETTER_AUTH_URL || "http://localhost:3000",
